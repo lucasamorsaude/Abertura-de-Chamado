@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abertura de Chamado de Suporte</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f7f9; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 500px; width: 100%; }
+        h1 { color: #1a202c; text-align: center; margin-bottom: 25px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 600; color: #4a5568; margin-bottom: 5px; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
+        textarea { resize: vertical; min-height: 100px; }
+        button { width: 100%; padding: 12px; background-color: #4299e1; color: white; border: none; border-radius: 4px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
+        button:hover { background-color: #3182ce; }
+        #message { text-align: center; margin-top: 20px; font-weight: 600; }
+        .success { color: #38a169; }
+        .error { color: #e53e3e; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Abrir Chamado de Suporte</h1>
+        <form id="ticketForm">
+            <div class="form-group">
+                <label for="solicitante">Seu Nome (Solicitante)</label>
+                <input type="text" id="solicitante" name="solicitante" required>
+            </div>
+            <div class="form-group">
+                <label for="titulo">Título do Chamado</label>
+                <input type="text" id="titulo" name="titulo" required>
+            </div>
+            <div class="form-group">
+                <label for="prioridade">Prioridade</label>
+                <select id="prioridade" name="prioridade" required>
+                    <option value="3">Normal</option>
+                    <option value="2">Alta</option>
+                    <option value="1">Urgente</option>
+                    <option value="4">Baixa</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="descricao">Descrição do Problema</label>
+                <textarea id="descricao" name="descricao" required></textarea>
+            </div>
+            <button type="submit">Abrir Chamado</button>
+        </form>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('ticketForm');
+        const messageDiv = document.getElementById('message');
+        
+        // COLE A URL DO SEU APP SCRIPT AQUI
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxqIChCATPTJEFodveVKCHHfBOWGldn242P9nbBINVoVpJtnqQlCtjCQaYYwEnlvecyRQ/exec";
