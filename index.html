@@ -52,44 +52,44 @@
     <script>
     const form = document.getElementById('ticketForm');
     const messageDiv = document.getElementById('message');
-    
-    // URL do seu App Script (já está correta)
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyR2g--eFuKntoBaKCrBTUMaqkid_RyiAL7xJVmD2TnbkwfrgVQ4P3_LSoSHq_cWXJWSQ/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhC_9uQJM4e3MH3NUJguAgomQ8lnQJ0dh7a-nUORQ3lulKdGaTw3khJ6cbU1sz2kcfSg/exec"; // Vamos gerar uma nova URL no final
 
-    // Lógica para enviar o formulário
     form.addEventListener('submit', function(e) {
-        e.preventDefault(); // Impede o recarregamento da página
+        e.preventDefault();
         
         const submitButton = this.querySelector('button');
         submitButton.disabled = true;
         submitButton.textContent = 'Enviando chamado...';
-        messageDiv.textContent = ''; // Limpa mensagens anteriores
+        messageDiv.textContent = '';
 
-        const formData = new FormData(this);
-        
-        // Envia os dados para o Google Apps Script
+        // Converte os dados do formulário para um objeto simples
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        // A MUDANÇA ESTÁ AQUI: Enviamos os dados como texto puro (JSON)
+        // Isso evita o erro de redirecionamento do Google
         fetch(SCRIPT_URL, {
             method: 'POST',
-            body: formData
+            headers: {
+              'Content-Type': 'text/plain;charset=utf-8',
+            },
+            body: JSON.stringify(data)
         })
         .then(response => response.json())
         .then(data => {
             if (data.result === 'success') {
                 messageDiv.className = 'success';
                 messageDiv.textContent = '✅ Chamado aberto com sucesso!';
-                form.reset(); // Limpa o formulário
+                form.reset();
             } else {
-                // Se o script do Google retornar um erro, ele será exibido aqui
                 throw new Error(data.message || 'Ocorreu um erro desconhecido.');
             }
         })
         .catch(error => {
-            // Erro de conexão ou do script
             messageDiv.className = 'error';
             messageDiv.textContent = '❌ Erro ao abrir chamado: ' + error.message;
         })
         .finally(() => {
-            // Reabilita o botão após o término
             submitButton.disabled = false;
             submitButton.textContent = 'Abrir Chamado';
         });
