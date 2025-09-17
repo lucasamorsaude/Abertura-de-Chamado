@@ -50,8 +50,50 @@
     </div>
 
     <script>
-        const form = document.getElementById('ticketForm');
-        const messageDiv = document.getElementById('message');
+    const form = document.getElementById('ticketForm');
+    const messageDiv = document.getElementById('message');
+    
+    // URL do seu App Script (já está correta)
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwUiMoK-oRMbIpsiqIDcsdC9bJvCrdOhMkQ6HVmK1zz-dBjjHo4UemMS1Xn7JSHWLjc/exec";
+
+    // Lógica para enviar o formulário
+    form.addEventListener('submit', function(e) {
+        e.preventDefault(); // Impede o recarregamento da página
         
-        // COLE A URL DO SEU APP SCRIPT AQUI
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxqIChCATPTJEFodveVKCHHfBOWGldn242P9nbBINVoVpJtnqQlCtjCQaYYwEnlvecyRQ/exec";
+        const submitButton = this.querySelector('button');
+        submitButton.disabled = true;
+        submitButton.textContent = 'Enviando chamado...';
+        messageDiv.textContent = ''; // Limpa mensagens anteriores
+
+        const formData = new FormData(this);
+        
+        // Envia os dados para o Google Apps Script
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.result === 'success') {
+                messageDiv.className = 'success';
+                messageDiv.textContent = '✅ Chamado aberto com sucesso!';
+                form.reset(); // Limpa o formulário
+            } else {
+                // Se o script do Google retornar um erro, ele será exibido aqui
+                throw new Error(data.message || 'Ocorreu um erro desconhecido.');
+            }
+        })
+        .catch(error => {
+            // Erro de conexão ou do script
+            messageDiv.className = 'error';
+            messageDiv.textContent = '❌ Erro ao abrir chamado: ' + error.message;
+        })
+        .finally(() => {
+            // Reabilita o botão após o término
+            submitButton.disabled = false;
+            submitButton.textContent = 'Abrir Chamado';
+        });
+    });
+</script>
+</body>
+</html>
