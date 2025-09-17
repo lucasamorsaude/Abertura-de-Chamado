@@ -14,11 +14,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             dueDate.setDate(now.getDate() + 2);
         }
         const dueDayOfWeek = dueDate.getDay();
-        if (dueDayOfWeek === 6) { // Sábado
-            dueDate.setDate(dueDate.getDate() + 2);
-        } else if (dueDayOfWeek === 0) { // Domingo
-            dueDate.setDate(dueDate.getDate() + 1);
-        }
+        if (dueDayOfWeek === 6) { dueDate.setDate(dueDate.getDate() + 2); } 
+        else if (dueDayOfWeek === 0) { dueDate.setDate(dueDate.getDate() + 1); }
         return dueDate.getTime();
     }
 
@@ -45,7 +42,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
 
-            // Pega os dados do formulário, incluindo o novo campo
             const taskRequester = document.getElementById('taskRequester').value.trim();
             const taskTitle = document.getElementById('taskTitle').value.trim();
             const originalDescription = document.getElementById('taskDescription').value.trim();
@@ -59,17 +55,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             submitBtn.disabled = true;
             submitBtn.textContent = 'Enviando...';
 
-            // Monta a descrição final com o solicitante
             const finalDescription = `**Solicitante:** ${taskRequester}\n\n---\n\n${originalDescription}`;
 
-            // Monta o corpo da requisição com todos os novos campos
             const body = {
                 name: taskTitle,
                 description: finalDescription,
                 priority: parseInt(taskPriority, 10),
                 due_date: getDueDateTimestamp(),
-                assignees: [parseInt(config.CLICKUP_ASSIGNEE_ID)] // Adiciona você como responsável
+                assignees: [parseInt(config.CLICKUP_ASSIGNEE_ID)]
             };
+
+            // ====================================================================
+            // LINHA DE DEPURAÇÃO ADICIONADA AQUI
+            console.log("Dados que serão enviados para o ClickUp:", body);
+            // ====================================================================
 
             try {
                 const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
@@ -78,10 +77,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 const response = await fetch(proxyUrl + apiUrl + url, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': config.CLICKUP_API_TOKEN
-                    },
+                    headers: { 'Content-Type': 'application/json', 'Authorization': config.CLICKUP_API_TOKEN },
                     body: JSON.stringify(body)
                 });
 
